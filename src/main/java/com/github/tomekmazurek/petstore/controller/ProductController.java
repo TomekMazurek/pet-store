@@ -28,10 +28,12 @@ public class ProductController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity removeProduct(@PathVariable("id") Long id) {
-        boolean deleted = productService.deleteProduct(id);
-        if (deleted) {
+        productService.deleteProduct(id);
             return ResponseEntity.ok().build();
-        }
-        return ResponseEntity.notFound().build();
+    }
+
+    @PutMapping()
+    public ResponseEntity<ProductDto> updateProduct(@RequestBody ProductDto productDto) {
+        return ResponseEntity.ok(productService.updateProduct(productDto));
     }
 }

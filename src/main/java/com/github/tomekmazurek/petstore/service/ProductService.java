@@ -5,6 +5,7 @@ import com.github.tomekmazurek.petstore.dto.ProductDto;
 import com.github.tomekmazurek.petstore.model.Category;
 import com.github.tomekmazurek.petstore.model.Product;
 import com.github.tomekmazurek.petstore.repository.ProductRepository;
+import com.github.tomekmazurek.petstore.service.errorhandling.ProductAlreadyExistsException;
 import com.github.tomekmazurek.petstore.service.errorhandling.ProductNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -49,7 +50,7 @@ public class ProductService {
                     BigDecimal.valueOf(productDto.getPrice()),
                     categories)));
         } else {
-            return updateProduct(productDto);
+            throw new ProductAlreadyExistsException();
         }
     }
 
@@ -67,12 +68,17 @@ public class ProductService {
 
     @Transactional
     public boolean deleteProduct(Long id) {
-        Product productToBeDeleted = productRepository.getById(id);
-        if (productToBeDeleted != null) {
-            productRepository.deleteById(id);
-            return true;
-        } else {
-            throw new ProductNotFoundException("Unable to find product with given id");
+        try {
+            Product productToBeDeleted = productRepository.getById(id);
+
+            if (productToBeDeleted != null) {
+                productRepository.deleteById(id);
+                return true;
+            }
+
+        } catch (Exception exc) {
+            throw new ProductNotFoundException();
         }
+        return false;
     }
 }
