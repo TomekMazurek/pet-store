@@ -1,0 +1,32 @@
+CREATE SCHEMA IF NOT EXISTS petStore;
+USE petStore;
+
+CREATE TABLE IF NOT EXISTS products(
+    id BIGINT NOT NULL AUTO_INCREMENT,
+    title VARCHAR(50) NOT NULL,
+    description VARCHAR(50),
+    stock_quantity INTEGER,
+    price DECIMAL,
+    PRIMARY KEY (id)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS categories(
+    id BIGINT NOT NULL AUTO_INCREMENT,
+    name VARCHAR(25) NOT NULL,
+    PRIMARY KEY (id)
+) ENGINE=INNODB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS products_categories(
+    product_id BIGINT NOT NULL,
+    category_id BIGINT NOT NULL,
+    PRIMARY KEY (product_id,category_id),
+    KEY FK_CATEGORY_idx (category_id),
+
+    CONSTRAINT `FK_CATEGORY_01` FOREIGN KEY (category_id)
+        REFERENCES categories (id)
+        ON DELETE NO ACTION ON UPDATE NO ACTION,
+
+    CONSTRAINT `FK_PRODUCT` FOREIGN KEY (product_id)
+        REFERENCES products (id)
+        ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
