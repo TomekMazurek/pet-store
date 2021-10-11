@@ -24,7 +24,7 @@ public class Product {
     @Column(name = "stock_quantity")
     private Integer stockQuantity;
     private BigDecimal price;
-    @ManyToMany( fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.REFRESH, CascadeType.PERSIST})
+    @ManyToMany( fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.REFRESH, CascadeType.PERSIST})
     @Nullable
     @JoinTable(
             name = "products_categories",

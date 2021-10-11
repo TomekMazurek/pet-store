@@ -19,11 +19,11 @@ CREATE TABLE products_categories(
     PRIMARY KEY (product_id,category_id),
     FOREIGN KEY (category_id)
         REFERENCES categories (id)
-        ON DELETE NO ACTION ON UPDATE NO ACTION,
+        ON DELETE CASCADE ON UPDATE NO ACTION,
 
     FOREIGN KEY (product_id)
         REFERENCES products (id)
-        ON DELETE NO ACTION ON UPDATE NO ACTION
+        ON DELETE CASCADE ON UPDATE NO ACTION
 );
 
 

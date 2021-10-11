@@ -20,13 +20,18 @@ public class CategoryController {
         return ResponseEntity.ok(categoryService.getAllCategories());
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<CategoryDto> getSingleCategory(@PathVariable("id") Long id) {
+        return ResponseEntity.ok(categoryService.getSingleCategory(id));
+    }
+
     @PostMapping
-    public ResponseEntity<CategoryDto> addCategory(@RequestBody CategoryDto categoryDto){
+    public ResponseEntity<CategoryDto> addCategory(@RequestBody CategoryDto categoryDto) {
         return ResponseEntity.ok(categoryService.addCategory(categoryDto));
     }
+
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteCategory(@PathVariable(name="id") Long id){
-        categoryService.deleteCategory(id);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<CategoryDto> deleteCategory(@PathVariable(name = "id") Long id) {
+        return ResponseEntity.ok(categoryService.deleteCategory(id));
     }
 }
