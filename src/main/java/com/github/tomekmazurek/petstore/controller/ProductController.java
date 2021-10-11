@@ -1,7 +1,6 @@
 package com.github.tomekmazurek.petstore.controller;
 
 import com.github.tomekmazurek.petstore.dto.ProductDto;
-import com.github.tomekmazurek.petstore.model.Product;
 import com.github.tomekmazurek.petstore.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +16,7 @@ public class ProductController {
     private final ProductService productService;
 
     @GetMapping
-    public ResponseEntity<List<Product>> getProducts() {
+    public ResponseEntity<List<ProductDto>> getProducts() {
         return ResponseEntity.ok(productService.getAll());
     }
 
@@ -27,9 +26,8 @@ public class ProductController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity removeProduct(@PathVariable("id") Long id) {
-        productService.deleteProduct(id);
-            return ResponseEntity.ok().build();
+    public ResponseEntity<ProductDto> removeProduct(@PathVariable("id") Long id) {
+            return ResponseEntity.ok(productService.deleteProduct(id));
     }
 
     @PutMapping()

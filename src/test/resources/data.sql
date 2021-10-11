@@ -1,4 +1,8 @@
-CREATE TABLE  products(
+DROP TABLE IF EXISTS products_categories;
+DROP TABLE IF EXISTS products;
+DROP TABLE IF EXISTS categories;
+
+CREATE TABLE products(
     id BIGINT NOT NULL AUTO_INCREMENT,
     title VARCHAR(50) NOT NULL,
     description VARCHAR(50),
@@ -13,7 +17,7 @@ CREATE TABLE categories(
     PRIMARY KEY (id)
 );
 
-CREATE TABLE products_categories(
+CREATE TABLE IF NOT EXISTS products_categories(
     product_id BIGINT NOT NULL,
     category_id BIGINT NOT NULL,
     PRIMARY KEY (product_id,category_id),

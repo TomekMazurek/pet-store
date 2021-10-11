@@ -21,7 +21,6 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@ExtendWith(SpringExtension.class)
 @SpringBootTest
 @TestPropertySource(locations = "classpath:application-test.properties")
 @AutoConfigureMockMvc
@@ -39,8 +38,10 @@ class CategoryControllerItTest {
 
         // when
         MvcResult result = mockMvc.perform(request).andDo(MockMvcResultHandlers.print()).andReturn();
-        List<CategoryDto> categories = mapper.readValue(result.getResponse().getContentAsString(), new TypeReference<List<CategoryDto>>() {
-        });
+        List<CategoryDto> categories = mapper.readValue(
+                result.getResponse().getContentAsString(),
+                new TypeReference<List<CategoryDto>>() {
+                });
 
         // then
         assertThat(result.getResponse().getStatus()).isEqualTo(200);
@@ -59,8 +60,13 @@ class CategoryControllerItTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(newCategory);
         // when
-        MvcResult result = mockMvc.perform(request).andDo(MockMvcResultHandlers.print()).andReturn();
-        CategoryDto responseBodyObject = mapper.readValue(result.getResponse().getContentAsString(), CategoryDto.class);
+        MvcResult result = mockMvc
+                .perform(request)
+                .andDo(MockMvcResultHandlers.print())
+                .andReturn();
+        CategoryDto responseBodyObject = mapper.readValue(
+                result.getResponse().getContentAsString(),
+                CategoryDto.class);
 
         // then
         assertThat(result.getResponse().getStatus()).isEqualTo(200);
@@ -74,7 +80,10 @@ class CategoryControllerItTest {
         RequestBuilder request = MockMvcRequestBuilders.delete("/api/v1/categories/1");
 
         // when
-        MvcResult result = mockMvc.perform(request).andDo(MockMvcResultHandlers.print()).andReturn();
+        MvcResult result = mockMvc
+                .perform(request)
+                .andDo(MockMvcResultHandlers.print())
+                .andReturn();
 
         // then
         assertThat(result.getResponse().getStatus()).isEqualTo(200);
@@ -86,9 +95,31 @@ class CategoryControllerItTest {
         RequestBuilder request = MockMvcRequestBuilders.delete("/api/v1/categories/5");
 
         // when
-        MvcResult result = mockMvc.perform(request).andDo(MockMvcResultHandlers.print()).andReturn();
+        MvcResult result = mockMvc
+                .perform(request)
+                .andDo(MockMvcResultHandlers.print())
+                .andReturn();
 
         // then
         assertThat(result.getResponse().getStatus()).isEqualTo(404);
+    }
+
+    @Test
+    void shouldGetSingleCategoryAndReturnStatus200() throws Exception {
+        // given
+        RequestBuilder request = MockMvcRequestBuilders.get("/api/v1/categories/1");
+
+        // when
+        MvcResult result = mockMvc
+                .perform(request)
+                .andDo(MockMvcResultHandlers.print())
+                .andReturn();
+        CategoryDto responseCategory = mapper.readValue(
+                result.getResponse().getContentAsString(),
+                CategoryDto.class);
+
+        // then
+        assertThat(responseCategory.getId()).isEqualTo(1);
+        assertThat(responseCategory.getName()).isEqualTo("dogs");
     }
 }

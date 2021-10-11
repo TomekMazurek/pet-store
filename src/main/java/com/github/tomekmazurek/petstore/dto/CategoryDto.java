@@ -22,13 +22,4 @@ public class CategoryDto {
         this.name = name;
     }
 
-//    @JsonCreator
-//    public CategoryDto(@JsonProperty("id") Long id) {
-//        this.id = id;
-//    }
-//
-//    @JsonCreator
-//    public CategoryDto(@JsonProperty("title") String title) {
-//        this.title = title;
-//    }
 }

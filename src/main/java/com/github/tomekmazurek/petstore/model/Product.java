@@ -32,12 +32,6 @@ public class Product {
             inverseJoinColumns = @JoinColumn(name = "category_id"))
     private List<Category> categories;
 
-    public Product(String title, String description, Integer stockQuantity, BigDecimal price) {
-        this.title = title;
-        this.description = description;
-        this.stockQuantity = stockQuantity;
-        this.price = price;
-    }
 
     public Product(Long id, String title, String description, Integer stockQuantity, BigDecimal price) {
         this.id = id;
