@@ -35,7 +35,9 @@ public class CategoryService {
 
     @Transactional
     public CategoryDto addCategory(CategoryDto categoryDto) {
-        if (categoryDto.getId() != null) {
+        if (categoryDto.getId() == null && categoryDto.getName() != null) {
+            return mapToDto(categoryRepository.save(mapToEntity(categoryDto)));
+        } else if (categoryDto.getId() != null && categoryDto.getName()==null) {
             Category existingCategory = categoryRepository.findById(categoryDto.getId()).orElse(null);
             if (existingCategory == null) {
                 return mapToDto(categoryRepository.save(mapToEntity(categoryDto)));

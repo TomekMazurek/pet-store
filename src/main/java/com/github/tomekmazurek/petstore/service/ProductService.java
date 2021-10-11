@@ -2,6 +2,7 @@ package com.github.tomekmazurek.petstore.service;
 
 import com.github.tomekmazurek.petstore.dto.CategoryDto;
 import com.github.tomekmazurek.petstore.dto.ProductDto;
+import com.github.tomekmazurek.petstore.mapper.ProductMapper;
 import com.github.tomekmazurek.petstore.model.Category;
 import com.github.tomekmazurek.petstore.model.Product;
 import com.github.tomekmazurek.petstore.repository.ProductRepository;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.github.tomekmazurek.petstore.mapper.ProductMapper.mapToDto;
 
@@ -24,12 +26,18 @@ public class ProductService {
     private final CategoryService categoryService;
 
 
-    public List<Product> getAll() {
-        return productRepository.findAll();
+    public List<ProductDto> getAll() {
+        return productRepository
+                .findAll()
+                .stream()
+                .map(this::buildProductDto)
+                .collect(Collectors.toList());
     }
 
-    public Product findById(Long id) {
-        return productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException("Unable to find a product with id=" + id));
+    public ProductDto findById(Long id) {
+        return ProductMapper.mapToDto(productRepository
+                .findById(id)
+                .orElseThrow(() -> new ProductNotFoundException("Unable to find a product with id=" + id)));
     }
 
     @Transactional
@@ -66,11 +74,36 @@ public class ProductService {
         return mapToDto(productToBeUpdated);
     }
 
-    public void deleteProduct(Long id) {
-        try {
-                productRepository.deleteById(id);
-        } catch (Exception exc) {
-            throw new ProductNotFoundException();
-        }
+    @Transactional
+    public ProductDto deleteProduct(Long id) {
+        ProductDto response = buildProductDto(productRepository.findById(id).orElseThrow(ProductNotFoundException::new));
+        productRepository.deleteById(id);
+        return response;
+    }
+
+    private ProductDto buildProductDto(Product product) {
+        return ProductDto.builder()
+                .id(product.getId())
+                .title(product.getTitle())
+                .description(product.getDescription())
+                .stockQuantity(product.getStockQuantity())
+                .price(product.getPrice().doubleValue())
+                .categories(product.getCategories() == null ? null : getCategoryDtos(product.getCategories()))
+                .build();
+    }
+
+    private List<CategoryDto> getCategoryDtos(List<Category> categories) {
+        return categories
+                .stream()
+                .map(this::buildCategoryDto)
+                .collect(Collectors.toList());
+    }
+
+    private CategoryDto buildCategoryDto(Category category) {
+        return CategoryDto
+                .builder()
+                .id(category.getId())
+                .name(category.getName())
+                .build();
     }
 }

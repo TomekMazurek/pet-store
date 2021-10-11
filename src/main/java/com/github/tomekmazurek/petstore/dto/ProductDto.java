@@ -8,7 +8,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 @NoArgsConstructor
@@ -24,30 +23,7 @@ public class ProductDto {
     private Double price;
     private List<CategoryDto> categories;
 
-//    @JsonCreator
-//    public ProductDto(@JsonProperty("title") String title,
-//                      @JsonProperty("description") String description,
-//                      @JsonProperty("stockQuantity") Integer stockQuantity,
-//                      @JsonProperty("price") Double price) {
-//        this.title = title;
-//        this.description = description;
-//        this.stockQuantity = stockQuantity;
-//        this.price = price;
-//    }
-//
-//    @JsonCreator
-//    public ProductDto(@JsonProperty("id") Long id,
-//                      @JsonProperty("title") String title,
-//                      @JsonProperty("description") String description,
-//                      @JsonProperty("stockQuantity") Integer stockQuantity,
-//                      @JsonProperty("price") Double price) {
-//        this.id = id;
-//        this.title = title;
-//        this.description = description;
-//        this.stockQuantity = stockQuantity;
-//        this.price = price;
-//    }
-@JsonCreator
+    @JsonCreator
     public ProductDto(@JsonProperty("id") Long id,
                       @JsonProperty("title") String title,
                       @JsonProperty("description") String description,
