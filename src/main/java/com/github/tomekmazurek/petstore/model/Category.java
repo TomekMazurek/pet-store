@@ -1,7 +1,7 @@
 package com.github.tomekmazurek.petstore.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
 import javax.persistence.*;
@@ -17,6 +17,9 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
+    @ManyToMany(mappedBy = "categories")
+    @JsonIgnore
+    private List<Product> products;
 
     public Category(String name) {
         this.name = name;

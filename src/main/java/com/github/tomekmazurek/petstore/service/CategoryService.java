@@ -1,13 +1,16 @@
 package com.github.tomekmazurek.petstore.service;
 
 import com.github.tomekmazurek.petstore.dto.CategoryDto;
+import com.github.tomekmazurek.petstore.mapper.CategoryMapper;
 import com.github.tomekmazurek.petstore.model.Category;
 import com.github.tomekmazurek.petstore.repository.CategoryRepository;
+import com.github.tomekmazurek.petstore.service.errorhandling.CategoryNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static com.github.tomekmazurek.petstore.mapper.CategoryMapper.mapToDto;
@@ -30,10 +33,10 @@ public class CategoryService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public CategoryDto addCategory(CategoryDto categoryDto) {
-        System.out.println(categoryDto.toString());
         if (categoryDto.getId() != null) {
-            Category existingCategory = categoryRepository.getById(categoryDto.getId());
+            Category existingCategory = categoryRepository.findById(categoryDto.getId()).orElse(null);
             if (existingCategory == null) {
                 return mapToDto(categoryRepository.save(mapToEntity(categoryDto)));
             } else {
@@ -47,18 +50,33 @@ public class CategoryService {
         return categoryDtos
                 .stream()
                 .map(categoryDto -> categoryRepository
-                        .findById(categoryDto.getId()).orElse(new Category()))
-                .filter(category -> category != null)
+                        .findById(categoryDto.getId()).orElse(null))
+                .filter(Objects::nonNull)
                 .collect(Collectors.toList());
     }
 
     @Transactional
-    public boolean deleteCategory(Long id) {
-        Category categoryToBeDeleted = categoryRepository.getById(id);
-        if (categoryToBeDeleted != null) {
-            categoryRepository.delete(categoryToBeDeleted);
-            return true;
+    public CategoryDto deleteCategory(Long id) {
+        try {
+            Category categoryToDelete = categoryRepository.findById(id).orElse(null);
+            if (categoryToDelete != null) {
+                CategoryDto responseBody = CategoryDto.builder()
+                        .id(categoryToDelete.getId())
+                        .name(categoryToDelete.getName())
+                        .build();
+                categoryRepository.deleteById(id);
+                return responseBody;
+            } else {
+                throw new CategoryNotFoundException();
+            }
+        } catch (Exception exc) {
+            throw new CategoryNotFoundException();
         }
-        return false;
+    }
+
+    public CategoryDto getSingleCategory(Long id) {
+        return CategoryMapper.mapToDto(categoryRepository
+                .findById(id)
+                .orElseThrow(CategoryNotFoundException::new));
     }
 }

@@ -63,8 +63,8 @@ class ProductControllerIntTest {
                 "    \"price\": 18.99,\n" +
                 "    \"stockQuantity\":100,\n" +
                 "    \"categories\":[\n" +
-                "        {\"id\":1},\n" +
-                "        {\"id\":2}\n" +
+                "        {\"id\":1, \"name\":\"dogs\"},\n" +
+                "        {\"id\":2, \"name\":\"accessories\"}\n" +
                 "    ]\n" +
                 "}";
 
@@ -129,13 +129,12 @@ class ProductControllerIntTest {
 
     private Long getRandomId(List<ProductDto> allProducts) {
         ProductDto randomProductToBeDeleted = allProducts.get((int) Math.round(Math.random() * (allProducts.size() - 1)));
-        Long id = randomProductToBeDeleted.getId();
-        return id;
+        return randomProductToBeDeleted.getId();
     }
 
     private List<ProductDto> getCurrentProducts() throws Exception {
         RequestBuilder requestAllProducts = MockMvcRequestBuilders.get("/api/v1/products");
-        List<ProductDto> allProducts = mapper.readValue(
+        return mapper.readValue(
                 mockMvc
                         .perform(requestAllProducts)
                         .andReturn()
@@ -143,7 +142,6 @@ class ProductControllerIntTest {
                         .getContentAsString(),
                 new TypeReference<List<ProductDto>>() {
                 });
-        return allProducts;
     }
 
     @Test

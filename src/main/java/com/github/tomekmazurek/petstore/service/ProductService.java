@@ -40,7 +40,7 @@ public class ProductService {
         }
         if (existingProduct == null) {
             List<CategoryDto> categoriesDto = productDto.getCategories();
-            categoriesDto.stream().forEach(categoryDto -> categoryService.addCategory(categoryDto));
+            categoriesDto.forEach(categoryService::addCategory);
             List<Category> categories = categoryService.getMatchingCategories(categoriesDto);
             return mapToDto(productRepository.save(new Product(
                     productDto.getId(),
@@ -66,19 +66,11 @@ public class ProductService {
         return mapToDto(productToBeUpdated);
     }
 
-    @Transactional
-    public boolean deleteProduct(Long id) {
+    public void deleteProduct(Long id) {
         try {
-            Product productToBeDeleted = productRepository.getById(id);
-
-            if (productToBeDeleted != null) {
                 productRepository.deleteById(id);
-                return true;
-            }
-
         } catch (Exception exc) {
             throw new ProductNotFoundException();
         }
-        return false;
     }
 }
