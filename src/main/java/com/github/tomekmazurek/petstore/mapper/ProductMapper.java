@@ -10,6 +10,9 @@ import java.util.stream.Collectors;
 
 public class ProductMapper {
 
+    private ProductMapper() {
+    }
+
     public static ProductDto mapToDto(Product product) {
         return ProductDto.builder()
                 .id(product.getId())

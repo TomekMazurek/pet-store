@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static com.github.tomekmazurek.petstore.mapper.CategoryMapper.mapToDto;
@@ -37,7 +36,7 @@ public class CategoryService {
     public CategoryDto addCategory(CategoryDto categoryDto) {
         if (categoryDto.getId() == null && categoryDto.getName() != null) {
             return mapToDto(categoryRepository.save(mapToEntity(categoryDto)));
-        } else if (categoryDto.getId() != null && categoryDto.getName()==null) {
+        } else if (categoryDto.getId() != null && categoryDto.getName() == null) {
             Category existingCategory = categoryRepository.findById(categoryDto.getId()).orElse(null);
             if (existingCategory == null) {
                 return mapToDto(categoryRepository.save(mapToEntity(categoryDto)));
@@ -48,13 +47,19 @@ public class CategoryService {
         return mapToDto(categoryRepository.save(new Category(categoryDto.getName())));
     }
 
-    public List<Category> getMatchingCategories(List<CategoryDto> categoryDtos) {
-        return categoryDtos
-                .stream()
-                .map(categoryDto -> categoryRepository
-                        .findById(categoryDto.getId()).orElse(null))
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
+    @Transactional
+    public List<Category> getMatchingCategoriesOrAddNew(List<CategoryDto> categoryDtos) {
+        return categoryDtos.stream().map(categoryDto -> {
+            Category existingCategory=null;
+            if(categoryDto.getId()!=null) {
+                existingCategory = categoryRepository.findById(categoryDto.getId()).orElse(null);
+            }
+            if (existingCategory == null && categoryDto.getName() != null) {
+                return categoryRepository.save(mapToEntity(categoryDto));
+            } else {
+                return existingCategory;
+            }
+        }).collect(Collectors.toList());
     }
 
     @Transactional

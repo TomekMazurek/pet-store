@@ -5,6 +5,9 @@ import com.github.tomekmazurek.petstore.model.Category;
 
 public class CategoryMapper {
 
+    private CategoryMapper() {
+    }
+
     public static CategoryDto mapToDto(Category category) {
         return CategoryDto
                 .builder()
