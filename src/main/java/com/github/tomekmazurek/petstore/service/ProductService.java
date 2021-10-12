@@ -49,7 +49,7 @@ public class ProductService {
         if (existingProduct == null) {
             List<CategoryDto> categoriesDto = productDto.getCategories();
             categoriesDto.forEach(categoryService::addCategory);
-            List<Category> categories = categoryService.getMatchingCategories(categoriesDto);
+            List<Category> categories = categoryService.getMatchingCategoriesOrAddNew(categoriesDto);
             return mapToDto(productRepository.save(new Product(
                     productDto.getId(),
                     productDto.getTitle(),
@@ -71,6 +71,7 @@ public class ProductService {
         productToBeUpdated.setPrice(BigDecimal.valueOf(productDto.getPrice()));
         productToBeUpdated.setDescription(productDto.getDescription());
         productToBeUpdated.setStockQuantity(productDto.getStockQuantity());
+        productToBeUpdated.setCategories(categoryService.getMatchingCategoriesOrAddNew(productDto.getCategories()));
         return mapToDto(productToBeUpdated);
     }
 
@@ -100,10 +101,14 @@ public class ProductService {
     }
 
     private CategoryDto buildCategoryDto(Category category) {
-        return CategoryDto
-                .builder()
-                .id(category.getId())
-                .name(category.getName())
-                .build();
+        if (category.getId() == null) {
+            return CategoryDto.builder().name(category.getName()).build();
+        } else {
+            return CategoryDto
+                    .builder()
+                    .id(category.getId())
+                    .name(category.getName())
+                    .build();
+        }
     }
 }
