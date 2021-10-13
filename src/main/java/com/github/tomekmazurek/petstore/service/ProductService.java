@@ -30,7 +30,7 @@ public class ProductService {
         return productRepository
                 .findAll()
                 .stream()
-                .map(this::buildProductDto)
+                .map(ProductMapper::mapToDto)
                 .collect(Collectors.toList());
     }
 
