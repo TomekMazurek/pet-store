@@ -37,7 +37,7 @@ public class ProductService {
     public ProductDto findById(Long id) {
         return ProductMapper.mapToDto(productRepository
                 .findById(id)
-                .orElseThrow(() -> new ProductNotFoundException("Unable to find a product with id=" + id)));
+                .orElseThrow(ProductNotFoundException::new));
     }
 
     @Transactional
@@ -66,7 +66,7 @@ public class ProductService {
     public ProductDto updateProduct(ProductDto productDto) {
         Product productToBeUpdated = productRepository
                 .findById(productDto.getId())
-                .orElseThrow(() -> new ProductNotFoundException("Unable to find product with given id"));
+                .orElseThrow(ProductNotFoundException::new);
         productToBeUpdated.setTitle(productDto.getTitle());
         productToBeUpdated.setPrice(BigDecimal.valueOf(productDto.getPrice()));
         productToBeUpdated.setDescription(productDto.getDescription());
@@ -80,6 +80,13 @@ public class ProductService {
         ProductDto response = buildProductDto(productRepository.findById(id).orElseThrow(ProductNotFoundException::new));
         productRepository.deleteById(id);
         return response;
+    }
+
+    @Transactional
+    public ProductDto decrementQuantity(Long id, int amount) {
+        Product productToBeUpdated = productRepository.findById(id).orElseThrow(ProductNotFoundException::new);
+        productToBeUpdated.setStockQuantity(productToBeUpdated.getStockQuantity() - amount);
+        return mapToDto(productToBeUpdated);
     }
 
     private ProductDto buildProductDto(Product product) {
@@ -101,14 +108,10 @@ public class ProductService {
     }
 
     private CategoryDto buildCategoryDto(Category category) {
-        if (category.getId() == null) {
-            return CategoryDto.builder().name(category.getName()).build();
-        } else {
             return CategoryDto
                     .builder()
                     .id(category.getId())
                     .name(category.getName())
                     .build();
-        }
     }
 }
