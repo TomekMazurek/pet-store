@@ -152,6 +152,20 @@ class ProductControllerTest {
         assertThat(updatedProduct.getDescription()).isEqualTo(requestProduct.getDescription());
     }
 
+    @Test
+    void shouldReturnProductDtoWhenDecrementingValue() throws Exception {
+        // given
+        ProductDto mockProduct = getMockProduct();
+        when(productService.decrementQuantity(anyLong(),anyInt())).thenReturn(mockProduct);
+
+        // when
+        MvcResult result = mockMvc.perform(put("/api/v1/products/1").param("amount","3")).andReturn();
+
+        // then
+        assertThat(result.getResponse().getStatus()).isEqualTo(200);
+        assertThat(mapper.readValue(result.getResponse().getContentAsString(),ProductDto.class)).isNotNull();
+    }
+
     private ProductDto getMockProduct() {
         return new ProductDto(
                 0L,

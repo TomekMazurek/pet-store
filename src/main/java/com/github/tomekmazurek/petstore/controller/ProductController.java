@@ -20,6 +20,10 @@ public class ProductController {
         return ResponseEntity.ok(productService.getAll());
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<ProductDto> getProduct(@PathVariable Long id){
+        return ResponseEntity.ok(productService.findById(id));
+    }
     @PostMapping
     public ResponseEntity<ProductDto> addProduct(@RequestBody ProductDto newProduct) {
         return ResponseEntity.ok(productService.add(newProduct));
@@ -27,11 +31,16 @@ public class ProductController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<ProductDto> removeProduct(@PathVariable("id") Long id) {
-            return ResponseEntity.ok(productService.deleteProduct(id));
+        return ResponseEntity.ok(productService.deleteProduct(id));
     }
 
     @PutMapping()
     public ResponseEntity<ProductDto> updateProduct(@RequestBody ProductDto productDto) {
         return ResponseEntity.ok(productService.updateProduct(productDto));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ProductDto> decrementQuantity(@PathVariable("id") Long id,@RequestParam("amount") int amount) {
+        return ResponseEntity.ok(productService.decrementQuantity(id, amount));
     }
 }

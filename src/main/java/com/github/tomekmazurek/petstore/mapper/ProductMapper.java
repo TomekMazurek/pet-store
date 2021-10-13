@@ -4,7 +4,6 @@ import com.github.tomekmazurek.petstore.dto.CategoryDto;
 import com.github.tomekmazurek.petstore.dto.ProductDto;
 import com.github.tomekmazurek.petstore.model.Product;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
@@ -29,14 +28,5 @@ public class ProductMapper {
                                 .build())
                         .collect(Collectors.toList()))
                 .build();
-    }
-
-    public static Product mapToEntity(ProductDto productDto) {
-        return new Product(
-                productDto.getId(),
-                productDto.getTitle(),
-                productDto.getDescription(),
-                productDto.getStockQuantity(),
-                BigDecimal.valueOf(productDto.getPrice()));
     }
 }
