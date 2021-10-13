@@ -15,9 +15,10 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import static com.github.tomekmazurek.petstore.testhelper.CategoryMother.createMockCategoryDto;
+import static com.github.tomekmazurek.petstore.testhelper.CategoryMother.createMockCategoryDtos;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.anyLong;
@@ -42,7 +43,7 @@ class CategoryControllerTest {
     @Test
     void shouldReturnListOfCategories() throws Exception {
         // given
-        List<CategoryDto> mockCategories = getMockCategories();
+        List<CategoryDto> mockCategories = createMockCategoryDtos();
         when(categoryService.getAllCategories()).thenReturn(mockCategories);
 
         // when
@@ -64,7 +65,7 @@ class CategoryControllerTest {
     @Test
     void shouldReturnSingleCategory() throws Exception {
         // given
-        CategoryDto mockCategory = getMockCategory();
+        CategoryDto mockCategory = createMockCategoryDto();
         when(categoryService.getSingleCategory(anyLong())).thenReturn(mockCategory);
 
         // when
@@ -80,7 +81,6 @@ class CategoryControllerTest {
         // then
         assertThat(responseCategory.getName()).isEqualTo(mockCategory.getName());
         assertThat(responseCategory.getId()).isEqualTo(1);
-
     }
 
     @Test
@@ -100,7 +100,7 @@ class CategoryControllerTest {
     @Test
     void shouldAddCategoryAndReturnCategoryDtoAndStatus200() throws Exception {
         // given
-        CategoryDto mockCategory = getMockCategory();
+        CategoryDto mockCategory = createMockCategoryDto();
         when(categoryService.addCategory(any(CategoryDto.class))).thenReturn(mockCategory);
 
         // when
@@ -122,7 +122,7 @@ class CategoryControllerTest {
     @Test
     void shouldDeleteCategoryAndReturnStatus200AndDeletedCategoryDto() throws Exception {
         // given
-        CategoryDto mockCategory = getMockCategory();
+        CategoryDto mockCategory = createMockCategoryDto();
         when(categoryService.deleteCategory(anyLong())).thenReturn(mockCategory);
 
         // when
@@ -137,16 +137,5 @@ class CategoryControllerTest {
 
         // then
         assertThat(deletedCategory.getName()).isEqualTo(mockCategory.getName());
-    }
-
-    private List<CategoryDto> getMockCategories() {
-        List<CategoryDto> categories = new ArrayList<>();
-        categories.add(new CategoryDto(1L, "dogs"));
-        categories.add(new CategoryDto(2L, "cats"));
-        return categories;
-    }
-
-    private CategoryDto getMockCategory() {
-        return new CategoryDto(1L, "accessories");
     }
 }

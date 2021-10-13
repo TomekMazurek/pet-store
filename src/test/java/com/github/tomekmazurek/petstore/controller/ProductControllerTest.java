@@ -2,32 +2,28 @@ package com.github.tomekmazurek.petstore.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.tomekmazurek.petstore.dto.CategoryDto;
 import com.github.tomekmazurek.petstore.dto.ProductDto;
 import com.github.tomekmazurek.petstore.service.ProductService;
 import com.github.tomekmazurek.petstore.service.errorhandling.ProductAlreadyExistsException;
 import com.github.tomekmazurek.petstore.service.errorhandling.ProductNotFoundException;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.*;
+import static com.github.tomekmazurek.petstore.testhelper.ProductMother.createMockProductDto;
+import static com.github.tomekmazurek.petstore.testhelper.ProductMother.createMockProductDtos;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 @WebMvcTest(ProductController.class)
 @TestPropertySource(locations = "classpath:application-test.properties")
@@ -45,7 +41,7 @@ class ProductControllerTest {
     @Test
     void shouldReturnListOfProductsWithStatus200() throws Exception {
         // given
-        List<ProductDto> mockProducts = getMockProducts();
+        List<ProductDto> mockProducts = createMockProductDtos();
         when(productService.getAll()).thenReturn(mockProducts);
 
         // when
@@ -65,7 +61,7 @@ class ProductControllerTest {
     @Test
     void shouldAddProductAndReturnProductDtoWithStatus200() throws Exception {
         // given
-        ProductDto mockProduct = getMockProduct();
+        ProductDto mockProduct = createMockProductDto();
         when(productService.add(any(ProductDto.class))).thenReturn(mockProduct);
 
         // when
@@ -85,7 +81,7 @@ class ProductControllerTest {
     @Test
     void shouldReturnStatus409WhenAddingProductThatAlreadyExists() throws Exception {
         // given
-        ProductDto mockProduct = getMockProduct();
+        ProductDto mockProduct = createMockProductDto();
         when(productService.add(any(ProductDto.class))).thenThrow(ProductAlreadyExistsException.class);
 
         // when
@@ -102,7 +98,7 @@ class ProductControllerTest {
     @Test
     void shouldReturnDeletedProductDtoAndStatus200() throws Exception {
         // given
-        ProductDto mockProduct = getMockProduct();
+        ProductDto mockProduct = createMockProductDto();
         when(productService.deleteProduct(anyLong())).thenReturn(mockProduct);
 
         // when
@@ -133,8 +129,8 @@ class ProductControllerTest {
     @Test
     void shouldUpdateProductAndReturnStatus200AndUpdatedProductDto() throws Exception {
         // given
-        ProductDto mockProduct = getMockProduct();
-        ProductDto requestProduct = getMockProduct();
+        ProductDto mockProduct = createMockProductDto();
+        ProductDto requestProduct = createMockProductDto();
         requestProduct.setTitle("before update");
         when(productService.updateProduct(any(ProductDto.class))).thenReturn(mockProduct);
 
@@ -155,7 +151,7 @@ class ProductControllerTest {
     @Test
     void shouldReturnProductDtoWhenDecrementingValue() throws Exception {
         // given
-        ProductDto mockProduct = getMockProduct();
+        ProductDto mockProduct = createMockProductDto();
         when(productService.decrementQuantity(anyLong(),anyInt())).thenReturn(mockProduct);
 
         // when
@@ -164,29 +160,5 @@ class ProductControllerTest {
         // then
         assertThat(result.getResponse().getStatus()).isEqualTo(200);
         assertThat(mapper.readValue(result.getResponse().getContentAsString(),ProductDto.class)).isNotNull();
-    }
-
-    private ProductDto getMockProduct() {
-        return new ProductDto(
-                0L,
-                "collar",
-                "dog collar",
-                10,
-                10.99,
-                Collections.singletonList(new CategoryDto(1L, "dogs")));
-    }
-
-    private List<ProductDto> getMockProducts() {
-        List<ProductDto> mockProducts = new ArrayList<>();
-        mockProducts.add(getMockProduct());
-        mockProducts.add(new ProductDto(
-                1L,
-                "leash",
-                "leash for dogs",
-                4,
-                16.50,
-                Collections.singletonList(new CategoryDto(2L, "accessories"))));
-
-        return mockProducts;
     }
 }

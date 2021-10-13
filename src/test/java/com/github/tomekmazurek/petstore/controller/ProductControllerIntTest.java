@@ -74,7 +74,6 @@ class ProductControllerIntTest {
         //then
         assertThat(result.getResponse().getStatus()).isEqualTo(200);
         assertThat(result.getResponse().getContentAsString()).isNotEqualTo("[]");
-
     }
 
     @Order(3)
@@ -120,17 +119,7 @@ class ProductControllerIntTest {
     @Test
     void shouldUpdateProductAndReturnCode200() throws Exception {
         // given
-        String requestBody = "{\n" +
-                "    \"id\":1," +
-                "    \"title\":\"Leash 5m\",\n" +
-                "    \"description\":\"Very strong leash for medium dogs\",\n" +
-                "    \"price\": 18.99,\n" +
-                "    \"stockQuantity\":100,\n" +
-                "    \"categories\":[\n" +
-                "        {\"id\":1},\n" +
-                "        {\"id\":2}\n" +
-                "    ]\n" +
-                "}";
+        String requestBody = getRequestBodyWithDataToBeUpdated();
 
         // when
         RequestBuilder request = MockMvcRequestBuilders
@@ -171,7 +160,6 @@ class ProductControllerIntTest {
         MvcResult result = mockMvc.perform(request).andReturn();
         // then
         assertThat(result.getResponse().getStatus()).isEqualTo(404);
-
     }
 
     private String getRequestBody() {
@@ -187,6 +175,19 @@ class ProductControllerIntTest {
                 "}";
     }
 
+    private String getRequestBodyWithDataToBeUpdated() {
+        return "{\n" +
+                "    \"id\":1," +
+                "    \"title\":\"Leash 5m\",\n" +
+                "    \"description\":\"Very strong leash for medium dogs\",\n" +
+                "    \"price\": 18.99,\n" +
+                "    \"stockQuantity\":100,\n" +
+                "    \"categories\":[\n" +
+                "        {\"id\":1},\n" +
+                "        {\"id\":2}\n" +
+                "    ]\n" +
+                "}";
+    }
 
     private Long getRandomId(List<ProductDto> allProducts) {
         ProductDto randomProductToBeDeleted = allProducts.get((int) Math.round(Math.random() * (allProducts.size() - 1)));
@@ -202,7 +203,6 @@ class ProductControllerIntTest {
                         .getResponse()
                         .getContentAsString(),
                 new TypeReference<List<ProductDto>>() {
-
                 });
     }
 }
