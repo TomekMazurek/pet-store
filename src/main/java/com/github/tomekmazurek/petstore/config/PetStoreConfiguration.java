@@ -15,8 +15,12 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @Configuration
 @EnableAutoConfiguration
 @ComponentScan(basePackages = {"com.github.tomekmazurek.petstore"})
-@EntityScan("com.github.tomekmazurek.petstore.model")
-@EnableJpaRepositories("com.github.tomekmazurek.petstore.repository")
+@EntityScan(value = {
+        "com.github.tomekmazurek.petstore.model",
+        "com.github.tomekmazurek.petstore.auth.model"})
+@EnableJpaRepositories(value = {
+        "com.github.tomekmazurek.petstore.repository",
+        "com.github.tomekmazurek.petstore.auth.repository"})
 @EnableSwagger2
 public class PetStoreConfiguration {
 
