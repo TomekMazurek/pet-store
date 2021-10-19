@@ -4,7 +4,6 @@ import com.github.tomekmazurek.petstore.dto.CategoryDto;
 import com.github.tomekmazurek.petstore.model.Category;
 import com.github.tomekmazurek.petstore.repository.CategoryRepository;
 import com.github.tomekmazurek.petstore.service.errorhandling.CategoryNotFoundException;
-import com.github.tomekmazurek.petstore.service.errorhandling.InvalidArgumentException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

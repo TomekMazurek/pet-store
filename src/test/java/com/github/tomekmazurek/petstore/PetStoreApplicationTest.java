@@ -1,5 +1,7 @@
 package com.github.tomekmazurek.petstore;
 
+import com.github.tomekmazurek.petstore.auth.controller.UserController;
+import com.github.tomekmazurek.petstore.auth.service.UserServiceImpl;
 import com.github.tomekmazurek.petstore.controller.CategoryController;
 import com.github.tomekmazurek.petstore.controller.ProductController;
 import com.github.tomekmazurek.petstore.service.CategoryService;
@@ -24,6 +26,10 @@ class PetStoreApplicationTest {
     ProductService productService;
     @Autowired
     CategoryService categoryService;
+    @Autowired
+    UserController userController;
+    @Autowired
+    UserServiceImpl userService;
 
     @Test
     void contextLoads() {
@@ -31,5 +37,7 @@ class PetStoreApplicationTest {
         assertThat(categoryController).isNotNull();
         assertThat(productService).isNotNull();
         assertThat(categoryService).isNotNull();
+        assertThat(userController).isNotNull();
+        assertThat(userService).isNotNull();
     }
 }

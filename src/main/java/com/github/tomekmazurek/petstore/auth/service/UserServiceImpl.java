@@ -18,11 +18,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-@Service
+@Service("userDetailsService")
 @RequiredArgsConstructor
 @Transactional
 @Slf4j
-public class UserServiceImpl implements UserService, UserDetailsService {
+public class UserServiceImpl implements UserDetailsService {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
@@ -41,33 +41,35 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), authorities);
     }
 
-    @Override
+
     public User saveUser(User user) {
         log.info("Saving user to the database");
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
 
-    @Override
+
     public Role saveRole(Role role) {
         log.info("Saving role to the database");
         return roleRepository.save(role);
     }
 
-    @Override
+
     public void addRoleToUser(String username, String roleName) {
         log.info("Accessing the");
         User user = userRepository.findByUsername(username).orElse(null);
         Role role = roleRepository.findRoleByName(roleName).orElse(null);
-        user.getRoles().add(role);
+        if (user != null) {
+            user.getRoles().add(role);
+        }
     }
 
-    @Override
+
     public User getUser(String username) {
         return userRepository.findByUsername(username).orElse(null);
     }
 
-    @Override
+
     public List<User> getUsers() {
         return userRepository.findAll();
     }

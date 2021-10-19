@@ -2,6 +2,8 @@ package com.github.tomekmazurek.petstore.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.tomekmazurek.petstore.auth.config.SecurityConfig;
+import com.github.tomekmazurek.petstore.auth.service.UserServiceImpl;
 import com.github.tomekmazurek.petstore.dto.CategoryDto;
 import com.github.tomekmazurek.petstore.service.CategoryService;
 import com.github.tomekmazurek.petstore.service.errorhandling.CategoryNotFoundException;
@@ -10,10 +12,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.web.context.WebApplicationContext;
 
 import java.util.List;
 
@@ -27,16 +34,22 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(CategoryController.class)
+@WebMvcTest(value = CategoryController.class, excludeAutoConfiguration = SecurityConfig.class)
 @TestPropertySource(locations = "classpath:application-test.properties")
 @AutoConfigureMockMvc
+@Import(SecurityConfig.class)
+@WithMockUser
 class CategoryControllerTest {
+
 
     @Autowired
     private ObjectMapper mapper;
     @Autowired
     private MockMvc mockMvc;
-
+    @MockBean
+    private UserServiceImpl userService;
+    @MockBean
+    private PasswordEncoder passwordEncoder;
     @MockBean
     private CategoryService categoryService;
 
