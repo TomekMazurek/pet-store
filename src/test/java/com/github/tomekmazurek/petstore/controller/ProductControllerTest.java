@@ -2,6 +2,8 @@ package com.github.tomekmazurek.petstore.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.tomekmazurek.petstore.auth.config.SecurityConfig;
+import com.github.tomekmazurek.petstore.auth.service.UserServiceImpl;
 import com.github.tomekmazurek.petstore.dto.ProductDto;
 import com.github.tomekmazurek.petstore.service.ProductService;
 import com.github.tomekmazurek.petstore.service.errorhandling.ProductAlreadyExistsException;
@@ -11,7 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -28,13 +33,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 @WebMvcTest(ProductController.class)
 @TestPropertySource(locations = "classpath:application-test.properties")
 @AutoConfigureMockMvc
+@Import(SecurityConfig.class)
+@WithMockUser
 class ProductControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
     @Autowired
     private ObjectMapper mapper;
-
+    @MockBean
+    private UserServiceImpl userService;
+    @MockBean
+    private PasswordEncoder passwordEncoder;
     @MockBean
     private ProductService productService;
 
