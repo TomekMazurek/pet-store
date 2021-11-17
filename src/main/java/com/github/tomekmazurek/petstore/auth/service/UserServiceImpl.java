@@ -1,5 +1,7 @@
 package com.github.tomekmazurek.petstore.auth.service;
 
+import com.github.tomekmazurek.petstore.auth.dto.UserDto;
+import com.github.tomekmazurek.petstore.auth.mapper.UserMapper;
 import com.github.tomekmazurek.petstore.auth.model.Role;
 import com.github.tomekmazurek.petstore.auth.model.User;
 import com.github.tomekmazurek.petstore.auth.repository.RoleRepository;
@@ -42,10 +44,10 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     }
 
     @Override
-    public User saveUser(User user) {
+    public User saveUser(UserDto user) {
         log.info("Saving user to the database");
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return userRepository.save(user);
+        return userRepository.save(UserMapper.mapToEntity(user));
     }
 
     @Override
