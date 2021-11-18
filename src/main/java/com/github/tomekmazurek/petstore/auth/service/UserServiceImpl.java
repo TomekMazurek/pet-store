@@ -1,6 +1,8 @@
 package com.github.tomekmazurek.petstore.auth.service;
 
+import com.github.tomekmazurek.petstore.auth.dto.RoleDto;
 import com.github.tomekmazurek.petstore.auth.dto.UserDto;
+import com.github.tomekmazurek.petstore.auth.mapper.RoleMapper;
 import com.github.tomekmazurek.petstore.auth.mapper.UserMapper;
 import com.github.tomekmazurek.petstore.auth.model.Role;
 import com.github.tomekmazurek.petstore.auth.model.User;
@@ -46,14 +48,18 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     @Override
     public User saveUser(UserDto user) {
         log.info("Saving user to the database");
+        user.setId(null);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return userRepository.save(UserMapper.mapToEntity(user));
+        user.setRoles(new ArrayList<>());
+        User savedUser = userRepository.save(UserMapper.mapToEntity(user));
+        addRoleToUser(savedUser.getUsername(), "ROLE_USER");
+        return savedUser;
     }
 
     @Override
-    public Role saveRole(Role role) {
+    public Role saveRole(RoleDto role) {
         log.info("Saving role to the database");
-        return roleRepository.save(role);
+        return roleRepository.save(RoleMapper.mapToEntity(role));
     }
 
     @Override
@@ -74,5 +80,10 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     @Override
     public List<User> getUsers() {
         return userRepository.findAll();
+    }
+
+    @Override
+    public List<Role> getRoles() {
+        return roleRepository.findAll();
     }
 }
