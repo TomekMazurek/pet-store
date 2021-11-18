@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class UserMother {
 
@@ -26,5 +27,12 @@ public class UserMother {
                 "test",
                 Collections.singletonList(new Role(1L, "ROLE_USER"))));
         return list;
+    }
+
+    public static User createSingleUser() {
+        User user = createListOfUsers().get(0);
+        user.setId(null);
+        user.setRoles(user.getRoles().stream().peek(role -> role.setId(null)).collect(Collectors.toList()));
+        return user;
     }
 }

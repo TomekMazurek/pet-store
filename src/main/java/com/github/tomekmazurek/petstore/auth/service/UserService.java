@@ -1,5 +1,6 @@
 package com.github.tomekmazurek.petstore.auth.service;
 
+import com.github.tomekmazurek.petstore.auth.dto.RoleDto;
 import com.github.tomekmazurek.petstore.auth.dto.UserDto;
 import com.github.tomekmazurek.petstore.auth.model.Role;
 import com.github.tomekmazurek.petstore.auth.model.User;
@@ -11,7 +12,7 @@ public interface UserService {
 
     User saveUser(UserDto user);
 
-    Role saveRole(Role role);
+    Role saveRole(RoleDto role);
 
     void addRoleToUser(String username, String role);
 
@@ -19,4 +20,5 @@ public interface UserService {
 
     List<User> getUsers();
 
+    List<Role> getRoles();
 }
