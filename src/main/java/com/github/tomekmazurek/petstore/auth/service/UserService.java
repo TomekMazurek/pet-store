@@ -21,5 +21,4 @@ public interface UserService {
     List<User> getUsers();
 
     List<Role> getRoles();
-
 }

@@ -1,5 +1,6 @@
 package com.github.tomekmazurek.petstore.auth.service;
 
+
 import com.github.tomekmazurek.petstore.auth.dto.RoleDto;
 import com.github.tomekmazurek.petstore.auth.dto.UserDto;
 import com.github.tomekmazurek.petstore.auth.mapper.RoleMapper;
